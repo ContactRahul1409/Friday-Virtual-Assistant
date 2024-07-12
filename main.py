@@ -9,6 +9,8 @@ import pyjokes
 import cv2
 import pyautogui
 from datetime import datetime
+from news import news_data
+from weather import weather_data
 import wikipedia
 
 recognizer = sr.Recognizer()
@@ -33,7 +35,6 @@ def image_capturing(ic):
             if not ret:
                 print("failed to grab frame")
                 break
-            # cv2.imshow("test",frame)
 
 
     cam.release()
@@ -73,10 +74,17 @@ def processCommand(c):
     elif "time" in c.lower():
         time = now.strftime("%H'hours':%M'minutes':%S'seconds'")
         speak(f"Time: {time}")
+    elif "news" in c.lower():
+        for article in news_data['articles']:
+            speak(article['title'])
+    elif "weather" in c.lower():
+        speak(f"Location: {weather_data['location']['name']}, {weather_data['location']['country']}")
+        speak(f"Temperature: {weather_data['current']['temp_c']}°C")
+        speak(f"Condition: {weather_data['current']['condition']['text']}")        
     else:
         results = wikipedia.summary(c.lower(), sentences=2)
         speak(results)
-            
+
 
 if __name__ == "__main__":
     speak("Initializing Friday...")
@@ -96,9 +104,7 @@ if __name__ == "__main__":
                     print("Friday Active...")
                     audio = r.listen(source)
                     command = r.recognize_google(audio, language='en-in')
-            if (command.lower() == "pardon"):   #repeat last command
-                    speak("sure")
-                    break
+
             print(command + "?")    #Ensuring the command
             processCommand(command)
         except sr.UnknownValueError:
