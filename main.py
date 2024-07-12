@@ -18,6 +18,16 @@ engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
 engine.setProperty('voice', voices[1].id)
 
+def listen():
+    recognizer = sr.Recognizer()
+    with sr.Microphone() as source:
+        print("Listening...")
+        audio = recognizer.listen(source)
+        command = recognizer.recognize_google(audio).lower()
+        print("You said : ",command)
+        return command
+
+
 # Get the current date and time
 now = datetime.now()
 
@@ -39,6 +49,30 @@ def image_capturing(ic):
 
     cam.release()
     cam.destroyAllWindows()
+
+
+def game():
+    while True:
+        choices = ["rock", "paper", "scissors"]
+        speak("What is your choice? Rock, paper, or scissors?")
+        friday_choice = random.choice(choices)
+        input_choice = listen()
+
+        if input_choice not in choices:
+            speak("Please say rock, paper, or scissors.")
+            return
+
+        print(f"Friday chose: {friday_choice}")
+
+        if input_choice == friday_choice:
+            speak("Tie")
+        elif (input_choice == "rock" and friday_choice == "scissors") or \
+         (input_choice == "paper" and friday_choice == "rock") or \
+         (input_choice == "scissors" and friday_choice == "paper"):
+            speak("You Won")
+        else:
+            speak("Yayy, I Won")
+ 
 
 
 def processCommand(c):
@@ -68,6 +102,8 @@ def processCommand(c):
         speak("Sure")
         camera = image_capturing(command)
         print(camera)
+    elif "game" in c.lower():
+        game()
     elif "date today" in c.lower():
         date = now.strftime("'day'%d-'month'%m-'year'%Y")
         speak(f"Date: {date}")
