@@ -4,7 +4,7 @@ import speech_recognition as sr
 import webbrowser
 import pyttsx3
 import random
-import musicLibrary
+import pywhatkit
 import pyjokes
 import cv2
 import pyautogui
@@ -90,10 +90,10 @@ def processCommand(c):
     elif "joke" in c.lower():
         joke = pyjokes.get_joke() 
         speak(joke)    
-    elif c.lower().startswith("play"):
-        song = c.lower().split(" ")[1]
-        link = musicLibrary.music[song]
-        webbrowser.open(link)
+    elif "play" in c.lower():
+        song = c.replace('play', '')
+        speak('playing' + song)
+        pywhatkit.playonyt(song)
     elif "screenshot" in c.lower():
         ss = pyautogui.hotkey('printscreen')
         speak("sure")
